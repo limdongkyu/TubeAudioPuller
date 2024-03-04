@@ -62,7 +62,7 @@ st.write('The end time is ', end_time)
 
 
 
-if st.button('시작'):
+if st.button('start extracting voice from YouTube video'):
     if start_time >= end_time:
         st.error('The start time must be less than the end time.')
         st.stop()
