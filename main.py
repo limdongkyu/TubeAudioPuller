@@ -22,10 +22,14 @@ def is_valid_youtube_url(url):
 
 def download_youtube_video(url, output_path):
     if not is_valid_youtube_url(url):
-        raise ValueError('유효한 YouTube URL이 아닙니다.')
+        # raise ValueError('유효한 YouTube URL이 아닙니다.')
+        st.error('This is not a valid YouTube URL.')
+        return False
+    
     yt = YouTube(url)
     ys = yt.streams.get_highest_resolution()
     ys.download(filename=output_path)
+    return True
 
 
 
@@ -40,7 +44,7 @@ def voice_extraction(video_path, start_time, end_time, output_voice_path):
     
 
 
-st.write("## 유튜브 영상에서 음성 추출하기")
+st.write("## Extracting YouTube Voice")
 
 
 video_path = st.text_input(
@@ -50,34 +54,38 @@ video_path = st.text_input(
         # placeholder=st.session_state.placeholder,
     )
 
-start_time = st.number_input(step=1, label='Insert a start time')
+start_time = st.number_input(step=1, label='Insert the start time')
 st.write('The start time is ', start_time)
 
-end_time = st.number_input(step=1, label='Insert a end time')
+end_time = st.number_input(step=1, label='Insert the end time')
 st.write('The end time is ', end_time)
 
 
 
 if st.button('시작'):
     if start_time >= end_time:
-        st.error('시작 시간은 종료 시간보다 작아야 합니다.')
+        st.error('The start time must be less than the end time.')
         st.stop()
-        
-    print(f"video_path - {video_path}")
-    print(f"start_time - {start_time}")
-    print(f"end_time - {end_time}")
 
-    with st.spinner('잠시만 기다려주세요...'):
+    with st.spinner('Please wait a moment...'):
         
-        download_youtube_video(video_path, output_path)
-        voice_extraction(output_path, start_time, end_time, output_voice_path)
-        with open(output_voice_path, "rb") as file:    
-            btn = st.download_button(
-                    label="Download wav file",
-                    data=file,
-                    file_name=output_voice_path,
-                    mime="audio/wav"
-                )
+        if download_youtube_video(video_path, output_path):
+            voice_extraction(output_path, start_time, end_time, output_voice_path)
+            with open(output_voice_path, "rb") as file:    
+                btn = st.download_button(
+                        label="Download wav file",
+                        data=file,
+                        file_name=output_voice_path,
+                        mime="audio/wav"
+                    )
+            st.write("##### Let's all live together.!")
+
+
+            ko_fi_button_html = '''
+            <a href='https://ko-fi.com/J3J2V8EYP' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+            '''
+            st.markdown(ko_fi_button_html, unsafe_allow_html=True)
+
 
 
 # def main():
