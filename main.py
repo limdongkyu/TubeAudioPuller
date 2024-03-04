@@ -73,7 +73,7 @@ if st.button('시작'):
         voice_extraction(output_path, start_time, end_time, output_voice_path)
         with open(output_voice_path, "rb") as file:    
             btn = st.download_button(
-                    label="Download wave file",
+                    label="Download wav file",
                     data=file,
                     file_name=output_voice_path,
                     mime="audio/wav"
